@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Base Colors -->
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <!-- Primary Colors -->
+    <color name="primary">#2196F3</color>
+    <color name="primary_dark">#1976D2</color>
+    <color name="primary_light">#BBDEFB</color>
+    <color name="primary_variant">#1565C0</color>
+
+    <!-- Accent Colors -->
+    <color name="accent">#FF9800</color>
+    <color name="accent_dark">#F57C00</color>
+    <color name="accent_light">#FFE0B2</color>
+
+    <!-- Background Colors -->
+    <color name="background">#F5F5F5</color>
+    <color name="surface">#FFFFFF</color>
+    <color name="surface_variant">#FAFAFA</color>
+
+    <!-- Text Colors -->
+    <color name="text_primary">#212121</color>
+    <color name="text_secondary">#757575</color>
+    <color name="text_hint">#BDBDBD</color>
+    <color name="text_disabled">#E0E0E0</color>
+    <color name="text_on_primary">#FFFFFF</color>
+
+    <!-- Status Colors -->
+    <color name="status_pending">#FFC107</color>
+    <color name="status_assigned">#2196F3</color>
+    <color name="status_on_the_way">#9C27B0</color>
+    <color name="status_arrived">#00BCD4</color>
+    <color name="status_in_progress">#FF9800</color>
+    <color name="status_completed">#4CAF50</color>
+    <color name="status_cancelled">#F44336</color>
+
+    <!-- Semantic Colors -->
+    <color name="error">#F44336</color>
+    <color name="error_dark">#D32F2F</color>
+    <color name="success">#4CAF50</color>
+    <color name="success_dark">#388E3C</color>
+    <color name="warning">#FFC107</color>
+    <color name="warning_dark">#FFA000</color>
+    <color name="info">#2196F3</color>
+    <color name="info_dark">#1976D2</color>
+
+    <!-- Divider & Border Colors -->
+    <color name="divider">#E0E0E0</color>
+    <color name="border">#BDBDBD</color>
+
+    <!-- Overlay Colors -->
+    <color name="overlay_dark">#80000000</color>
+    <color name="overlay_light">#40FFFFFF</color>
+
+    <!-- Card & Shadow Colors -->
+    <color name="card_background">#FFFFFF</color>
+    <color name="shadow">#20000000</color>
+</resources>

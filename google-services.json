@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "909728238079",
+    "project_id": "carwashservice-aeprog",
+    "storage_bucket": "carwashservice-aeprog.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:909728238079:android:61fa0cd9218bf0ca517fca",
+        "android_client_info": {
+          "package_name": "com.example.carwash"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD0t1TskNHry-rOrWmB61ixIZI0MYlCvZQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
