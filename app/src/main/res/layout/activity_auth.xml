@@ -11,53 +11,61 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="24dp"
-        android:gravity="center">
+        android:gravity="center_horizontal">
 
-        <!-- Logo Section -->
+        <!-- Logo -->
         <ImageView
-            android:layout_width="171dp"
-            android:layout_height="122dp"
-            android:layout_marginTop="32dp"
+            android:layout_width="150dp"
+            android:layout_height="110dp"
+            android:layout_marginTop="26dp"
             android:contentDescription="@string/app_name"
             android:src="@drawable/my_logo" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="10dp"
             android:text="@string/app_name"
-            android:textSize="24sp"
+            android:textSize="22sp"
             android:textStyle="bold"
             android:textColor="@color/primary" />
 
-        <!-- Form Container -->
+        <TextView
+            android:id="@+id/tvSubtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="Welcome"
+            android:textSize="14sp"
+            android:textColor="@color/text_secondary" />
+
+        <!-- Form Card -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="4dp">
+            android:layout_marginTop="22dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="6dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="24dp">
+                android:padding="20dp">
 
-                <!-- Register Fields (Hidden by default) -->
+                <!-- Register Fields -->
                 <LinearLayout
                     android:id="@+id/layoutRegisterFields"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:visibility="gone">
+                    android:orientation="vertical">
 
-                    <!-- Name -->
                     <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/layoutName"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="16dp"
-                        style="@style/EditTextStyle">
+                        android:layout_marginBottom="12dp"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/etName"
@@ -65,15 +73,14 @@
                             android:layout_height="wrap_content"
                             android:hint="@string/name"
                             android:inputType="textPersonName" />
-
                     </com.google.android.material.textfield.TextInputLayout>
 
-                    <!-- Phone -->
                     <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/layoutPhone"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="16dp"
-                        style="@style/EditTextStyle">
+                        android:layout_marginBottom="12dp"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/etPhone"
@@ -81,17 +88,16 @@
                             android:layout_height="wrap_content"
                             android:hint="@string/phone"
                             android:inputType="phone" />
-
                     </com.google.android.material.textfield.TextInputLayout>
-
                 </LinearLayout>
 
                 <!-- Email -->
                 <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/layoutEmail"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    style="@style/EditTextStyle">
+                    android:layout_marginBottom="12dp"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etEmail"
@@ -99,7 +105,6 @@
                         android:layout_height="wrap_content"
                         android:hint="@string/email"
                         android:inputType="textEmailAddress" />
-
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <!-- Password -->
@@ -107,8 +112,8 @@
                     android:id="@+id/layoutPassword"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    style="@style/EditTextStyle"
+                    android:layout_marginBottom="12dp"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     app:passwordToggleEnabled="true">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -117,17 +122,15 @@
                         android:layout_height="wrap_content"
                         android:hint="@string/password"
                         android:inputType="textPassword" />
-
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <!-- Confirm Password (Hidden by default) -->
+                <!-- Confirm Password -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/layoutConfirmPassword"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    android:visibility="gone"
-                    style="@style/EditTextStyle"
+                    android:layout_marginBottom="6dp"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     app:passwordToggleEnabled="true">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -136,43 +139,42 @@
                         android:layout_height="wrap_content"
                         android:hint="@string/confirm_password"
                         android:inputType="textPassword" />
-
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <!-- Forgot Password -->
+                <!-- Forgot -->
                 <TextView
                     android:id="@+id/tvForgotPassword"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
-                    android:layout_marginBottom="24dp"
+                    android:layout_marginTop="6dp"
+                    android:layout_marginBottom="18dp"
                     android:text="@string/forgot_password"
                     android:textColor="@color/primary"
                     android:textSize="14sp" />
 
-                <!-- Submit Button -->
+                <!-- Submit -->
                 <Button
                     android:id="@+id/btnSubmit"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="48dp"
                     android:text="@string/login"
+                    android:textAllCaps="false"
                     android:textSize="16sp"
-                    style="@style/ButtonPrimary" />
+                    style="@style/Widget.MaterialComponents.Button" />
 
             </LinearLayout>
-
         </androidx.cardview.widget.CardView>
 
-        <!-- Toggle Mode -->
+        <!-- Toggle -->
         <TextView
             android:id="@+id/tvToggleMode"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="18dp"
             android:text="@string/dont_have_account"
             android:textColor="@color/text_primary"
             android:textSize="14sp" />
 
     </LinearLayout>
-
 </ScrollView>
