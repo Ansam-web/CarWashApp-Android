@@ -4,9 +4,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.toolbox.StringRequest;
 import com.example.carwash.R;
@@ -19,23 +20,26 @@ import com.example.carwash.utils.Constants;
 import com.example.carwash.utils.Helpers;
 import com.example.carwash.utils.SharedPrefManager;
 import com.example.carwash.utils.VolleySingleton;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 
 import org.json.JSONObject;
 
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * AuthActivity
- * Login + Register using PHP + MySQL + Volley
- */
 public class AuthActivity extends BaseActivity {
 
-    private EditText etEmail, etPassword, etConfirmPassword;
-    private EditText etName, etPhone;
+    // Inputs
+    private TextInputEditText etEmail, etPassword, etConfirmPassword, etName, etPhone;
+
+    // Layout wrappers (مهم!)
+    private TextInputLayout layoutPassword, layoutConfirmPassword;
+    private View layoutRegisterFields;
+
     private Button btnSubmit;
     private TextView tvToggleMode, tvForgotPassword;
-    private View layoutRegisterFields;
 
     private String currentMode = Constants.MODE_LOGIN;
 
@@ -59,71 +63,72 @@ public class AuthActivity extends BaseActivity {
         etConfirmPassword = findViewById(R.id.etConfirmPassword);
         etName = findViewById(R.id.etName);
         etPhone = findViewById(R.id.etPhone);
+
+        layoutPassword = findViewById(R.id.layoutPassword);
+        layoutConfirmPassword = findViewById(R.id.layoutConfirmPassword);
+
+        layoutRegisterFields = findViewById(R.id.layoutRegisterFields);
+
         btnSubmit = findViewById(R.id.btnSubmit);
         tvToggleMode = findViewById(R.id.tvToggleMode);
         tvForgotPassword = findViewById(R.id.tvForgotPassword);
-        layoutRegisterFields = findViewById(R.id.layoutRegisterFields);
-    }
-
-    private void setupMode(String mode) {
-        currentMode = mode;
-
-        if (mode.equals(Constants.MODE_LOGIN)) {
-            layoutRegisterFields.setVisibility(View.GONE);
-            etConfirmPassword.setVisibility(View.GONE);
-            etPassword.setVisibility(View.VISIBLE);
-            btnSubmit.setText(R.string.login);
-            tvToggleMode.setText(R.string.dont_have_account);
-            tvForgotPassword.setVisibility(View.VISIBLE);
-
-        } else if (mode.equals(Constants.MODE_REGISTER)) {
-            layoutRegisterFields.setVisibility(View.VISIBLE);
-            etConfirmPassword.setVisibility(View.VISIBLE);
-            etPassword.setVisibility(View.VISIBLE);
-            btnSubmit.setText(R.string.register);
-            tvToggleMode.setText(R.string.already_have_account);
-            tvForgotPassword.setVisibility(View.GONE);
-
-        } else if (mode.equals(Constants.MODE_FORGOT)) {
-            layoutRegisterFields.setVisibility(View.GONE);
-            etConfirmPassword.setVisibility(View.GONE);
-            etPassword.setVisibility(View.GONE);
-            btnSubmit.setText(R.string.send_reset_link);
-            tvToggleMode.setText(R.string.already_have_account);
-            tvForgotPassword.setVisibility(View.GONE);
-        }
     }
 
     private void setupListeners() {
         btnSubmit.setOnClickListener(v -> handleSubmit());
 
         tvToggleMode.setOnClickListener(v -> {
-            if (currentMode.equals(Constants.MODE_LOGIN)) {
+            if (Constants.MODE_LOGIN.equals(currentMode)) {
                 setupMode(Constants.MODE_REGISTER);
             } else {
                 setupMode(Constants.MODE_LOGIN);
             }
         });
 
-        tvForgotPassword.setOnClickListener(v -> setupMode(Constants.MODE_FORGOT));
+        tvForgotPassword.setOnClickListener(v -> {
+            // إذا مش بدك forgot حالياً، خليه يرجع login مع رسالة
+            showInfo("Not supported", "Forgot password is not implemented yet.");
+        });
     }
 
-    private void handleSubmit() {
-        if (currentMode.equals(Constants.MODE_LOGIN)) {
-            handleLogin();
-        } else if (currentMode.equals(Constants.MODE_REGISTER)) {
-            handleRegister();
-        } else {
-            showInfo("Not supported", "Forgot password is not implemented yet.");
-            setupMode(Constants.MODE_LOGIN);
+    private void setupMode(String mode) {
+        currentMode = mode;
+
+        clearErrors();
+
+        if (Constants.MODE_LOGIN.equals(mode)) {
+            layoutRegisterFields.setVisibility(View.GONE);
+            layoutConfirmPassword.setVisibility(View.GONE);
+
+            layoutPassword.setVisibility(View.VISIBLE);
+            tvForgotPassword.setVisibility(View.VISIBLE);
+
+            btnSubmit.setText(R.string.login);
+            tvToggleMode.setText(R.string.dont_have_account);
+
+        } else if (Constants.MODE_REGISTER.equals(mode)) {
+            layoutRegisterFields.setVisibility(View.VISIBLE);
+            layoutConfirmPassword.setVisibility(View.VISIBLE);
+
+            layoutPassword.setVisibility(View.VISIBLE);
+            tvForgotPassword.setVisibility(View.GONE);
+
+            btnSubmit.setText(R.string.register);
+            tvToggleMode.setText(R.string.already_have_account);
         }
     }
 
-    /* ================= LOGIN ================= */
+    private void handleSubmit() {
+        if (Constants.MODE_LOGIN.equals(currentMode)) {
+            handleLogin();
+        } else {
+            handleRegister();
+        }
+    }
 
     private void handleLogin() {
-        String email = etEmail.getText().toString().trim();
-        String password = etPassword.getText().toString().trim();
+        String email = safeText(etEmail);
+        String password = safeText(etPassword);
 
         if (!validateLogin(email, password)) return;
 
@@ -138,33 +143,40 @@ public class AuthActivity extends BaseActivity {
                     try {
                         JSONObject obj = new JSONObject(response);
 
-                        if (obj.getBoolean("success")) {
+                        if (obj.optBoolean("success", false)) {
                             JSONObject user = obj.getJSONObject("user");
+
+                            String role = user.optString("role", "customer").trim().toLowerCase();
 
                             SharedPrefManager.getInstance(this).saveUser(
                                     user.getInt("id"),
-                                    user.getString("name"),
-                                    user.getString("email"),
-                                    user.getString("role")
+                                    user.optString("name", ""),
+                                    user.optString("email", ""),
+                                    role
                             );
 
-                            showToast("Welcome back " + user.getString("name"));
-                            redirectToRoleDashboard(user.getString("role"));
+                            if (user.has("phone")) {
+                                SharedPrefManager.getInstance(this).saveUserPhone(user.optString("phone", ""));
+                            }
+
+                            showToast("Logged in as: " + role.toUpperCase());
+
+                            redirectToRoleDashboard(role);
                         } else {
-                            showError(obj.getString("message"));
+                            showError(obj.optString("message", "Login failed"));
                         }
 
                     } catch (Exception e) {
-                        showError("Response error");
+                        showError("Response error (JSON). Server returned: " + shortText(response));
                     }
                 },
                 error -> {
                     hideLoading();
-                    showError("Network error");
+                    showVolleyError(error);
                 }
         ) {
             @Override
-            protected Map<String, String> getParams() {
+            protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> params = new HashMap<>();
                 params.put("email", email);
                 params.put("password", password);
@@ -172,17 +184,21 @@ public class AuthActivity extends BaseActivity {
             }
         };
 
+        request.setRetryPolicy(new DefaultRetryPolicy(
+                15000,
+                1,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+        ));
+
         VolleySingleton.getInstance(this).add(request);
     }
 
-    /* ================= REGISTER ================= */
-
     private void handleRegister() {
-        String email = etEmail.getText().toString().trim();
-        String password = etPassword.getText().toString().trim();
-        String confirmPassword = etConfirmPassword.getText().toString().trim();
-        String name = etName.getText().toString().trim();
-        String phone = etPhone.getText().toString().trim();
+        String name = safeText(etName);
+        String phone = safeText(etPhone);
+        String email = safeText(etEmail);
+        String password = safeText(etPassword);
+        String confirmPassword = safeText(etConfirmPassword);
 
         if (!validateRegister(email, password, confirmPassword, name, phone)) return;
 
@@ -197,49 +213,58 @@ public class AuthActivity extends BaseActivity {
                     try {
                         JSONObject obj = new JSONObject(response);
 
-                        if (obj.getBoolean("success")) {
+                        if (obj.optBoolean("success", false)) {
                             showToast("Account created successfully");
                             setupMode(Constants.MODE_LOGIN);
                         } else {
-                            showError(obj.getString("message"));
+                            showError(obj.optString("message", "Register failed"));
                         }
 
                     } catch (Exception e) {
-                        showError("Response error");
+                        showError("Response error (JSON). Server returned: " + shortText(response));
                     }
                 },
                 error -> {
                     hideLoading();
-                    showError("Network error");
+                    showVolleyError(error);
                 }
         ) {
             @Override
-            protected Map<String, String> getParams() {
+            protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> params = new HashMap<>();
                 params.put("name", name);
+                params.put("phone", phone);
                 params.put("email", email);
                 params.put("password", password);
-                params.put("phone", phone);
                 return params;
             }
         };
 
+        request.setRetryPolicy(new DefaultRetryPolicy(
+                15000,
+                1,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+        ));
+
         VolleySingleton.getInstance(this).add(request);
     }
 
-    /* ================= VALIDATION ================= */
-
     private boolean validateLogin(String email, String password) {
+        clearErrors();
+
         if (Helpers.isEmpty(email)) {
             etEmail.setError(Constants.ERROR_EMPTY_FIELD);
+            etEmail.requestFocus();
             return false;
         }
         if (!Helpers.isValidEmail(email)) {
             etEmail.setError(Constants.ERROR_INVALID_EMAIL);
+            etEmail.requestFocus();
             return false;
         }
         if (Helpers.isEmpty(password)) {
             etPassword.setError(Constants.ERROR_EMPTY_FIELD);
+            etPassword.requestFocus();
             return false;
         }
         return true;
@@ -247,50 +272,100 @@ public class AuthActivity extends BaseActivity {
 
     private boolean validateRegister(String email, String password, String confirmPassword,
                                      String name, String phone) {
+        clearErrors();
+
         if (Helpers.isEmpty(name)) {
             etName.setError(Constants.ERROR_EMPTY_FIELD);
+            etName.requestFocus();
             return false;
         }
-        if (!Helpers.isValidEmail(email)) {
-            etEmail.setError(Constants.ERROR_INVALID_EMAIL);
+        if (Helpers.isEmpty(phone)) {
+            etPhone.setError(Constants.ERROR_EMPTY_FIELD);
+            etPhone.requestFocus();
             return false;
         }
         if (!Helpers.isValidPhone(phone)) {
             etPhone.setError(Constants.ERROR_INVALID_PHONE);
+            etPhone.requestFocus();
+            return false;
+        }
+        if (Helpers.isEmpty(email)) {
+            etEmail.setError(Constants.ERROR_EMPTY_FIELD);
+            etEmail.requestFocus();
+            return false;
+        }
+        if (!Helpers.isValidEmail(email)) {
+            etEmail.setError(Constants.ERROR_INVALID_EMAIL);
+            etEmail.requestFocus();
+            return false;
+        }
+        if (Helpers.isEmpty(password)) {
+            etPassword.setError(Constants.ERROR_EMPTY_FIELD);
+            etPassword.requestFocus();
             return false;
         }
         if (!Helpers.isValidPassword(password)) {
             etPassword.setError(Constants.ERROR_PASSWORD_SHORT);
+            etPassword.requestFocus();
             return false;
         }
         if (!Helpers.passwordsMatch(password, confirmPassword)) {
             etConfirmPassword.setError(Constants.ERROR_PASSWORDS_DONT_MATCH);
+            etConfirmPassword.requestFocus();
             return false;
         }
         return true;
     }
 
-    /* ================= REDIRECT ================= */
-
     private void redirectToRoleDashboard(String role) {
-        Intent intent;
+        String r = (role == null) ? "customer" : role.trim().toLowerCase();
 
-        switch (role) {
-            case Constants.ROLE_CUSTOMER:
+        Intent intent;
+        switch (r) {
+            case "customer":
                 intent = new Intent(this, CustomerActivity.class);
                 break;
-            case Constants.ROLE_EMPLOYEE:
+            case "employee":
                 intent = new Intent(this, EmployeeActivity.class);
                 break;
-            case Constants.ROLE_MANAGER:
+            case "manager":
                 intent = new Intent(this, ManagerActivity.class);
                 break;
             default:
-                showError("Unknown role");
+                showError("Unknown role: " + r);
                 return;
         }
-
         startActivity(intent);
         finish();
+    }
+
+    // ===== Helpers =====
+
+    private String safeText(TextInputEditText et) {
+        return et.getText() == null ? "" : et.getText().toString().trim();
+    }
+
+    private void clearErrors() {
+        if (etEmail != null) etEmail.setError(null);
+        if (etPassword != null) etPassword.setError(null);
+        if (etConfirmPassword != null) etConfirmPassword.setError(null);
+        if (etName != null) etName.setError(null);
+        if (etPhone != null) etPhone.setError(null);
+    }
+
+    private void showVolleyError(com.android.volley.VolleyError error) {
+        // هذا بيعطيك سبب "Network error" الحقيقي
+        if (error.networkResponse != null && error.networkResponse.data != null) {
+            String body = new String(error.networkResponse.data, StandardCharsets.UTF_8);
+            showError("Server error (PHP)\n" + shortText(body));
+        } else {
+            showError("Network error\n" + (error.getMessage() != null ? error.getMessage() : "Check URL / Internet / Cleartext"));
+        }
+    }
+
+    private String shortText(String s) {
+        if (s == null) return "";
+        s = s.replace("\n", " ").replace("\r", " ");
+        return s.length() > 180 ? s.substring(0, 180) + "..." : s;
     }
 }
