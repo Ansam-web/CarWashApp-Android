@@ -146,20 +146,22 @@ public class AuthActivity extends BaseActivity {
                         if (obj.optBoolean("success", false)) {
                             JSONObject user = obj.getJSONObject("user");
 
+                            String role = user.optString("role", "customer").trim().toLowerCase();
+
                             SharedPrefManager.getInstance(this).saveUser(
                                     user.getInt("id"),
-                                    user.getString("name"),
-                                    user.getString("email"),
-                                    user.getString("role")
+                                    user.optString("name", ""),
+                                    user.optString("email", ""),
+                                    role
                             );
 
-                            // لو API بيرجع phone:
                             if (user.has("phone")) {
-                                SharedPrefManager.getInstance(this).saveUserPhone(user.getString("phone"));
+                                SharedPrefManager.getInstance(this).saveUserPhone(user.optString("phone", ""));
                             }
 
-                            showToast("Welcome back " + user.getString("name"));
-                            redirectToRoleDashboard(user.getString("role"));
+                            showToast("Logged in as: " + role.toUpperCase());
+
+                            redirectToRoleDashboard(role);
                         } else {
                             showError(obj.optString("message", "Login failed"));
                         }
@@ -316,19 +318,21 @@ public class AuthActivity extends BaseActivity {
     }
 
     private void redirectToRoleDashboard(String role) {
+        String r = (role == null) ? "customer" : role.trim().toLowerCase();
+
         Intent intent;
-        switch (role) {
-            case Constants.ROLE_CUSTOMER:
+        switch (r) {
+            case "customer":
                 intent = new Intent(this, CustomerActivity.class);
                 break;
-            case Constants.ROLE_EMPLOYEE:
+            case "employee":
                 intent = new Intent(this, EmployeeActivity.class);
                 break;
-            case Constants.ROLE_MANAGER:
+            case "manager":
                 intent = new Intent(this, ManagerActivity.class);
                 break;
             default:
-                showError("Unknown role: " + role);
+                showError("Unknown role: " + r);
                 return;
         }
         startActivity(intent);
