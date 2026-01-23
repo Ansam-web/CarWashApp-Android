@@ -9,7 +9,7 @@ public class ApiConfig {
     public static final String LOGIN    = BASE_URL + "login.php";
 
     // =========================
-    // MANAGER - DASHBOARD / STATS
+    // MANAGER - DASHBOARD
     // =========================
     public static final String MANAGER_STATS = BASE_URL + "manager_stats.php";
 
