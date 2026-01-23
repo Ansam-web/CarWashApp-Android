@@ -108,7 +108,6 @@ public class ManagerActivity extends BaseActivity {
      * Open manage bookings
      */
     private void openManageBookings() {
-        // إذا عندك Activity جاهزة للبوكينغ، فكّي التعليق واستعمليها:
         // Intent intent = new Intent(this, ManagerBookingsActivity.class);
         // startActivity(intent);
 
@@ -119,7 +118,6 @@ public class ManagerActivity extends BaseActivity {
      * Open manage employees
      */
     private void openManageEmployees() {
-        // إذا عندك Activity جاهزة للموظفين:
         // Intent intent = new Intent(this, EmployeesManageActivity.class);
         // startActivity(intent);
 
@@ -130,7 +128,6 @@ public class ManagerActivity extends BaseActivity {
      * Open reviews
      */
     private void openReviews() {
-        // إذا عندك Activity جاهزة للمراجعات:
         // Intent intent = new Intent(this, ReviewsActivity.class);
         // startActivity(intent);
 
