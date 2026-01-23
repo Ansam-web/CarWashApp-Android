@@ -78,7 +78,7 @@
             android:label="@string/employee_dashboard" />
 
         <activity
-            android:name=".activities.employee.BookingsManageActivity"
+            android:name=".activities.employee.EmployeeBookingsFragment"
             android:exported="false"
             android:label="@string/manage_bookings"
             android:parentActivityName=".activities.employee.EmployeeActivity" />

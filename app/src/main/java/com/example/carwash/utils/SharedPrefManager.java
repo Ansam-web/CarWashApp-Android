@@ -21,6 +21,15 @@ public class SharedPrefManager {
     private static final String KEY_USER_PHONE = "user_phone";
     private static final String KEY_USER_ROLE = "user_role";
     private static final String KEY_FIRST_TIME = "first_time";
+    private static final String KEY_TEAM_ID = "team_id";
+
+    public void saveTeamId(int teamId){
+        editor.putInt(KEY_TEAM_ID, teamId);
+        editor.apply();
+    }
+    public int getTeamId(){
+        return sharedPreferences.getInt(KEY_TEAM_ID, -1);
+    }
 
     private SharedPrefManager(Context context) {
         Context appCtx = context.getApplicationContext();
