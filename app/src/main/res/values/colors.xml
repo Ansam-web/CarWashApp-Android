@@ -19,6 +19,7 @@
     <color name="background">#F5F5F5</color>
     <color name="surface">#FFFFFF</color>
     <color name="surface_variant">#FAFAFA</color>
+    <color name="purple_500">#6750A4</color>
 
     <!-- Text Colors -->
     <color name="text_primary">#212121</color>

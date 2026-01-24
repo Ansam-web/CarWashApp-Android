@@ -1,12 +1,14 @@
 package com.example.carwash.activities.manager;
 
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.android.volley.Request;
 import com.android.volley.toolbox.StringRequest;
@@ -23,8 +25,9 @@ public class ManagerStatsActivity extends AppCompatActivity {
 
     private TextView tvTotal, tvCompleted, tvPending, tvRevenue, tvAvgRating;
     private ProgressBar progress;
+    private View chipStatus; // Chip موجود بالـ XML الجديد
 
-    // مؤقتاً: حطي manager_id ثابت للتجربة (بعدها بنجيبها من Session/UserManager)
+    // مؤقتاً للتجربة
     private int managerId = 3;
 
     @Override
@@ -32,28 +35,56 @@ public class ManagerStatsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manager_stats);
 
+        // ✅ Toolbar + Back
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setTitle("Manager Statistics");
+        }
+
+        // Views
         tvTotal = findViewById(R.id.tvTotalBookings);
         tvCompleted = findViewById(R.id.tvCompletedBookings);
         tvPending = findViewById(R.id.tvPendingBookings);
         tvRevenue = findViewById(R.id.tvTotalRevenue);
         tvAvgRating = findViewById(R.id.tvAvgRating);
+
         progress = findViewById(R.id.progress);
+
+        // إذا الـ Chip مش موجود (لو استخدمت XML القديم)، ما رح يعمل كراش
+        chipStatus = findViewById(R.id.chipStatus);
 
         loadStats();
     }
 
+    // ✅ سهم الرجوع
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish(); // بيرجع للشاشة اللي قبل (ManagerActivity)
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void setLoading(boolean loading) {
+        if (progress != null) progress.setVisibility(loading ? View.VISIBLE : View.GONE);
+        if (chipStatus != null) chipStatus.setVisibility(loading ? View.GONE : View.VISIBLE);
+    }
+
     private void loadStats() {
-        progress.setVisibility(View.VISIBLE);
+        setLoading(true);
 
         StringRequest req = new StringRequest(
                 Request.Method.POST,
                 ApiConfig.MANAGER_STATS,
                 response -> {
-                    progress.setVisibility(View.GONE);
+                    setLoading(false);
                     try {
                         JSONObject obj = new JSONObject(response);
                         if (!obj.optBoolean("success")) {
-                            Toast.makeText(this, obj.optString("message","Error"), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(this, obj.optString("message", "Error"), Toast.LENGTH_SHORT).show();
                             return;
                         }
 
@@ -69,8 +100,8 @@ public class ManagerStatsActivity extends AppCompatActivity {
                     }
                 },
                 error -> {
-                    progress.setVisibility(View.GONE);
-                    Toast.makeText(this, "Network error: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                    setLoading(false);
+                    Toast.makeText(this, "Network error", Toast.LENGTH_SHORT).show();
                 }
         ) {
             @Override
