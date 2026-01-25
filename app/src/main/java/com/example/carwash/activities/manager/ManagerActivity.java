@@ -96,9 +96,6 @@ public class ManagerActivity extends BaseActivity {
         startActivity(intent);
     }
 
-    /**
-     * Open manage teams
-     */
     private void openManageTeams() {
         Intent intent = new Intent(this, TeamsManageActivity.class);
         startActivity(intent);
@@ -118,10 +115,10 @@ public class ManagerActivity extends BaseActivity {
      * Open manage employees
      */
     private void openManageEmployees() {
-        // Intent intent = new Intent(this, EmployeesManageActivity.class);
-        // startActivity(intent);
+         Intent intent = new Intent(this, EmployeesManageActivity.class);
+         startActivity(intent);
 
-        showToast("Manage Employees feature coming soon!");
+//        showToast("Manage Employees feature coming soon!");
     }
 
     /**

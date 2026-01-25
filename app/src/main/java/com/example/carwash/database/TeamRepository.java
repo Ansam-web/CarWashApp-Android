@@ -1,11 +1,13 @@
 package com.example.carwash.database;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 
 import com.android.volley.Request;
 import com.android.volley.toolbox.StringRequest;
 import com.example.carwash.models.Team;
 import com.example.carwash.utils.ApiConfig;
+import com.example.carwash.utils.Constants;
 import com.example.carwash.utils.VolleySingleton;
 
 import org.json.JSONArray;
@@ -30,10 +32,33 @@ public class TeamRepository {
         this.context = context.getApplicationContext();
     }
 
+    /**
+     * ✅ Safe read for user_id regardless of old stored type (int) or new (String)
+     * WITHOUT changing SharedPrefManager.
+     */
+    private String safeUserId() {
+        SharedPreferences sp = context.getSharedPreferences(
+                Constants.PREFS_NAME,
+                Context.MODE_PRIVATE
+        );
+
+        try {
+            // New format (String)
+            return sp.getString("user_id", "");
+        } catch (ClassCastException ex) {
+            // Old format (int)
+            int id = sp.getInt("user_id", -1);
+            return String.valueOf(id);
+        }
+    }
+
+    // =========================
+    // GET ALL TEAMS
+    // =========================
     public void getAllTeams(OnTeamsLoadedListener listener) {
 
         StringRequest req = new StringRequest(
-                Request.Method.GET,
+                Request.Method.POST,
                 GET_ALL_TEAMS,
                 response -> {
                     try {
@@ -49,27 +74,40 @@ public class TeamRepository {
 
                         if (arr != null) {
                             for (int i = 0; i < arr.length(); i++) {
-                                JSONObject t = arr.getJSONObject(i);
-                                teams.add(parseTeam(t));
+                                teams.add(parseTeam(arr.getJSONObject(i)));
                             }
                         }
 
                         listener.onTeamsLoaded(teams);
 
                     } catch (Exception e) {
+                        e.printStackTrace();
                         listener.onError("Parse error");
                     }
                 },
-                error -> listener.onError("Network error")
-        );
+                error -> {
+                    error.printStackTrace();
+                    listener.onError("Network error");
+                }
+        ) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> p = new HashMap<>();
+                p.put("manager_id", safeUserId());
+                return p;
+            }
+        };
 
         VolleySingleton.getInstance(context).add(req);
     }
 
+    // =========================
+    // GET AVAILABLE TEAMS
+    // =========================
     public void getAvailableTeams(OnTeamsLoadedListener listener) {
 
         StringRequest req = new StringRequest(
-                Request.Method.GET,
+                Request.Method.POST,
                 GET_AVAILABLE_TEAMS,
                 response -> {
                     try {
@@ -85,23 +123,36 @@ public class TeamRepository {
 
                         if (arr != null) {
                             for (int i = 0; i < arr.length(); i++) {
-                                JSONObject t = arr.getJSONObject(i);
-                                teams.add(parseTeam(t));
+                                teams.add(parseTeam(arr.getJSONObject(i)));
                             }
                         }
 
                         listener.onTeamsLoaded(teams);
 
                     } catch (Exception e) {
+                        e.printStackTrace();
                         listener.onError("Parse error");
                     }
                 },
-                error -> listener.onError("Network error")
-        );
+                error -> {
+                    error.printStackTrace();
+                    listener.onError("Network error");
+                }
+        ) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> p = new HashMap<>();
+                p.put("manager_id", safeUserId());
+                return p;
+            }
+        };
 
         VolleySingleton.getInstance(context).add(req);
     }
 
+    // =========================
+    // ADD TEAM
+    // =========================
     public void addTeam(Team team, OnTeamAddedListener listener) {
 
         StringRequest req = new StringRequest(
@@ -120,18 +171,23 @@ public class TeamRepository {
                         }
 
                     } catch (Exception e) {
+                        e.printStackTrace();
                         listener.onError("Parse error");
                     }
                 },
-                error -> listener.onError("Network error")
+                error -> {
+                    error.printStackTrace();
+                    listener.onError("Network error");
+                }
         ) {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> p = new HashMap<>();
+                p.put("manager_id", safeUserId());
                 p.put("name", team.getName());
                 p.put("car_number", team.getCarNumber());
                 p.put("car_plate", team.getCarPlate());
-                p.put("available", "1"); // افتراضي متاح
+                p.put("is_available", "1"); // default available
                 return p;
             }
         };
@@ -139,6 +195,9 @@ public class TeamRepository {
         VolleySingleton.getInstance(context).add(req);
     }
 
+    // =========================
+    // UPDATE TEAM
+    // =========================
     public void updateTeam(String teamId, Team team, OnTeamUpdatedListener listener) {
 
         StringRequest req = new StringRequest(
@@ -155,14 +214,19 @@ public class TeamRepository {
                         }
 
                     } catch (Exception e) {
+                        e.printStackTrace();
                         listener.onError("Parse error");
                     }
                 },
-                error -> listener.onError("Network error")
+                error -> {
+                    error.printStackTrace();
+                    listener.onError("Network error");
+                }
         ) {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> p = new HashMap<>();
+                p.put("manager_id", safeUserId());
                 p.put("team_id", teamId);
                 p.put("name", team.getName());
                 p.put("car_number", team.getCarNumber());
@@ -174,6 +238,9 @@ public class TeamRepository {
         VolleySingleton.getInstance(context).add(req);
     }
 
+    // =========================
+    // DELETE TEAM
+    // =========================
     public void deleteTeam(String teamId, OnTeamDeletedListener listener) {
 
         StringRequest req = new StringRequest(
@@ -190,14 +257,19 @@ public class TeamRepository {
                         }
 
                     } catch (Exception e) {
+                        e.printStackTrace();
                         listener.onError("Parse error");
                     }
                 },
-                error -> listener.onError("Network error")
+                error -> {
+                    error.printStackTrace();
+                    listener.onError("Network error");
+                }
         ) {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> p = new HashMap<>();
+                p.put("manager_id", safeUserId());
                 p.put("team_id", teamId);
                 return p;
             }
@@ -206,23 +278,22 @@ public class TeamRepository {
         VolleySingleton.getInstance(context).add(req);
     }
 
-    // ===== Helper: parse Team from JSON =====
+    // =========================
+    // Helper: parse Team from JSON
+    // =========================
     private Team parseTeam(JSONObject t) {
         Team team = new Team();
-
-        // عدّل أسماء الحقول إذا PHP بيرجع غير هيك
         team.setTeamId(t.optString("team_id", ""));
         team.setName(t.optString("name", ""));
-        team.setCarNumber(t.optString("car_number", t.optString("carNumber", "")));
-        team.setCarPlate(t.optString("car_plate", t.optString("carPlate", "")));
-
-        // إذا الموديل عندك فيه available/isAvailable
-        // team.setAvailable(t.optInt("available", 1) == 1);
-
+        team.setCarNumber(t.optString("car_number", ""));
+        team.setCarPlate(t.optString("car_plate", ""));
+        team.setAvailable(t.optInt("is_available", 1) == 1);
         return team;
     }
 
-    // ===== Callbacks =====
+    // =========================
+    // Callbacks
+    // =========================
     public interface OnTeamsLoadedListener {
         void onTeamsLoaded(List<Team> teams);
         void onError(String error);

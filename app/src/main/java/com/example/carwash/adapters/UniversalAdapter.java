@@ -39,16 +39,17 @@ public class UniversalAdapter<T> extends ListAdapter<T, UniversalAdapter.Univers
         return new UniversalViewHolder(view);
     }
 
+
     @Override
     public void onBindViewHolder(@NonNull UniversalViewHolder holder, int position) {
+        holder.setIsRecyclable(true);
+
         T item = getItem(position);
 
-        // Use the binder to display item data
         if (binder != null) {
             binder.bindData(item, holder.tvTitle, holder.tvSubtitle, holder.tvExtra);
         }
 
-        // Click listener
         holder.cardItem.setOnClickListener(v -> {
             if (listener != null) {
                 listener.onItemClick(item);

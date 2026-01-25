@@ -4,21 +4,22 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background">
+    android:background="@drawable/bg_carwash_auth"
+    android:fitsSystemWindows="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <!-- Toolbar -->
-        <androidx.appcompat.widget.Toolbar
+        <!-- ✅ CarWash Toolbar -->
+        <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@color/primary"
-            android:elevation="4dp"
-            app:titleTextColor="@color/white"
+            android:background="@drawable/bg_carwash_toolbar"
+            app:titleTextColor="@android:color/white"
+            app:navigationIconTint="@android:color/white"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
         <!-- Content -->
@@ -31,7 +32,7 @@
                 android:id="@+id/recyclerTeams"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:padding="8dp"
+                android:padding="12dp"
                 android:clipToPadding="false"
                 android:visibility="gone" />
 
@@ -49,114 +50,140 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:text="@string/no_data"
-                android:textSize="16sp"
-                android:textColor="@color/text_secondary"
+                android:textSize="15sp"
+                android:textColor="#335B6B"
                 android:visibility="gone" />
 
         </FrameLayout>
 
     </LinearLayout>
 
-    <!-- Team Form (Overlay) -->
+    <!-- ✅ Team Form (Overlay) -->
     <ScrollView
         android:id="@+id/layoutTeamForm"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/background"
+        android:background="#66000000"
         android:visibility="gone"
         android:padding="16dp">
 
-        <LinearLayout
+        <!-- Glass card container -->
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_marginTop="28dp"
+            android:layout_marginBottom="28dp"
+            app:cardCornerRadius="24dp"
+            app:cardUseCompatPadding="true"
+            app:cardElevation="14dp"
+            app:strokeWidth="1dp"
+            app:strokeColor="#1AFFFFFF">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Add Team"
-                android:textSize="24sp"
-                android:textStyle="bold"
-                android:textColor="@color/text_primary"
-                android:layout_marginBottom="24dp" />
-
-            <!-- Team Name -->
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                style="@style/EditTextStyle">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etTeamName"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Team Name (e.g., Team A)"
-                    android:inputType="text" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <!-- Car Number -->
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                style="@style/EditTextStyle">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etCarNumber"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Car Number (e.g., CAR-001)"
-                    android:inputType="text" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <!-- Car Plate -->
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"
-                style="@style/EditTextStyle">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etCarPlate"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Car Plate (e.g., ABC-123)"
-                    android:inputType="text" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <!-- Buttons -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="end">
+                android:orientation="vertical"
+                android:padding="18dp"
+                android:background="@drawable/bg_glass_card">
 
-                <Button
-                    android:id="@+id/btnCancelTeam"
+                <!-- Title -->
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/cancel"
-                    android:layout_marginEnd="8dp"
-                    style="@style/ButtonSecondary" />
+                    android:text="Add Team"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:textColor="#0B4A6F"
+                    android:layout_marginBottom="10dp" />
 
-                <Button
-                    android:id="@+id/btnSaveTeam"
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/save"
-                    style="@style/ButtonPrimary" />
+                    android:text="Create a washing team and assign the car info."
+                    android:textSize="12sp"
+                    android:textColor="#335B6B"
+                    android:layout_marginBottom="18dp" />
+
+                <!-- Team Name -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    style="@style/EditTextStyle"
+                    android:hint="Team Name (e.g., Team A)">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etTeamName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="text" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Car Number -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    style="@style/EditTextStyle"
+                    android:hint="Car Number (e.g., CAR-001)">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etCarNumber"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="text" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Car Plate -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    style="@style/EditTextStyle"
+                    android:hint="Car Plate (e.g., ABC-123)">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etCarPlate"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="text" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Buttons -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="end"
+                    android:layout_marginTop="18dp">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnCancelTeam"
+                        style="@style/ButtonSecondary"
+                        android:layout_width="wrap_content"
+                        android:layout_height="48dp"
+                        android:text="@string/cancel"
+                        android:textAllCaps="false"
+                        android:layout_marginEnd="10dp"
+                        app:cornerRadius="14dp" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnSaveTeam"
+                        style="@style/ButtonPrimary"
+                        android:layout_width="wrap_content"
+                        android:layout_height="48dp"
+                        android:text="@string/save"
+                        android:textAllCaps="false"
+                        app:cornerRadius="14dp" />
+
+                </LinearLayout>
 
             </LinearLayout>
 
-        </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
 
     </ScrollView>
 
-    <!-- FAB -->
+    <!-- ✅ FAB -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabAddTeam"
         android:layout_width="wrap_content"
@@ -165,7 +192,7 @@
         android:layout_margin="16dp"
         android:src="@android:drawable/ic_input_add"
         android:contentDescription="Add Team"
-        app:tint="@color/white"
-        app:backgroundTint="@color/primary" />
+        app:tint="@android:color/white"
+        app:backgroundTint="#2196F3" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

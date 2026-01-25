@@ -81,7 +81,8 @@
             android:name=".activities.employee.EmployeeBookingsFragment"
             android:exported="false"
             android:label="@string/manage_bookings"
-            android:parentActivityName=".activities.employee.EmployeeActivity" />
+            android:parentActivityName=".activities.employee.EmployeeActivity"
+            tools:ignore="Instantiatable" />
 
         <!-- Manager Activities -->
         <activity
@@ -105,6 +106,12 @@
             android:exported="false"
             android:label="@string/manage_teams"
             android:parentActivityName=".activities.manager.ManagerActivity" />
+        <activity
+            android:name=".activities.manager.EmployeesManageActivity"
+            android:exported="false"
+            android:label="@string/manage_employees"
+            android:parentActivityName=".activities.manager.ManagerActivity" />
+
 
     </application>
 
