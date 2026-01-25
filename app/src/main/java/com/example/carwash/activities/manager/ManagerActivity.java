@@ -83,7 +83,6 @@ public class ManagerActivity extends BaseActivity {
      * Open statistics
      */
     private void openStatistics() {
-        // فتح شاشة الإحصائيات
         Intent intent = new Intent(this, ManagerStatsActivity.class);
         startActivity(intent);
     }
@@ -121,12 +120,20 @@ public class ManagerActivity extends BaseActivity {
 //        showToast("Manage Employees feature coming soon!");
     }
 
+    private void openServiceEmployees() {
+        Intent intent = new Intent(this, ServicesManageActivity.class);
+        startActivity(intent);
+
+//        showToast("Manage Employees feature coming soon!");
+    }
+
+
     /**
      * Open reviews
      */
     private void openReviews() {
-        // Intent intent = new Intent(this, ReviewsActivity.class);
-        // startActivity(intent);
+//         Intent intent = new Intent(this, ReviewsActivity.class);
+//         startActivity(intent);
 
         showToast("Customer Reviews feature coming soon!");
     }

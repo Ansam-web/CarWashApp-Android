@@ -23,14 +23,6 @@ public class SharedPrefManager {
     private static final String KEY_FIRST_TIME = "first_time";
     private static final String KEY_TEAM_ID = "team_id";
 
-    public void saveTeamId(int teamId){
-        editor.putInt(KEY_TEAM_ID, teamId);
-        editor.apply();
-    }
-    public int getTeamId(){
-        return sharedPreferences.getInt(KEY_TEAM_ID, -1);
-    }
-
     private SharedPrefManager(Context context) {
         Context appCtx = context.getApplicationContext();
         this.sharedPreferences = appCtx.getSharedPreferences(
@@ -45,6 +37,19 @@ public class SharedPrefManager {
             instance = new SharedPrefManager(context);
         }
         return instance;
+    }
+
+    // ========================================================================
+    // TEAM (optional)
+    // ========================================================================
+
+    public void saveTeamId(int teamId) {
+        editor.putInt(KEY_TEAM_ID, teamId);
+        editor.apply();
+    }
+
+    public int getTeamId() {
+        return sharedPreferences.getInt(KEY_TEAM_ID, -1);
     }
 
     // ========================================================================
@@ -69,9 +74,10 @@ public class SharedPrefManager {
         return sharedPreferences.getBoolean(KEY_LOGGED_IN, false);
     }
 
-    public String getUserId() {
-        return sharedPreferences.getString(KEY_USER_ID, "");
-    }
+//    // ✅✅ FIX: id is saved as INT, so it must be read as INT
+//    public int getUserId() {
+//        return sharedPreferences.getInt(KEY_USER_ID, -1);
+//    }
 
     public String getUserName() {
         return sharedPreferences.getString(KEY_USER_NAME, "");
@@ -142,6 +148,17 @@ public class SharedPrefManager {
         editor.putBoolean(key, value);
         editor.apply();
     }
+    // ✅ ترجع ID كـ int (للـ manager_id)
+    public int getUserIdInt() {
+        return sharedPreferences.getInt(KEY_USER_ID, -1);
+    }
+
+    // ✅ ترجع ID كـ String (للشاشات اللي بتستخدم String)
+    public String getUserId() {
+        int id = sharedPreferences.getInt(KEY_USER_ID, -1);
+        return id <= 0 ? "" : String.valueOf(id);
+    }
+
 
     public boolean getBooleanSetting(String key, boolean defaultValue) {
         return sharedPreferences.getBoolean(key, defaultValue);

@@ -6,37 +6,38 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.carwash.R;
 import com.example.carwash.activities.BaseActivity;
 import com.example.carwash.adapters.ServicesAdapter;
-import com.example.carwash.database.*;
+import com.example.carwash.database.ServiceRepository;
 import com.example.carwash.models.Service;
 import com.example.carwash.utils.Helpers;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import java.util.List;
 
-/**
- * ServicesManageActivity.java
- * Manages services - add, edit, delete
- * Manager only
- */
 public class ServicesManageActivity extends BaseActivity {
 
     private RecyclerView recyclerServices;
     private ProgressBar progressBar;
     private TextView tvEmptyState;
+
     private FloatingActionButton fabAddService;
     private View layoutServiceForm;
 
-    // Form fields
+    private TextView tvFormTitle;
     private EditText etServiceType, etServiceDescription, etServiceDuration, etServicePrice;
     private Button btnSaveService, btnCancelService;
 
-    private ServicesAdapter adapter;
     private ServiceRepository serviceRepository;
+    private ServicesAdapter adapter;
+
     private Service currentService;
     private boolean isEditMode = false;
 
@@ -47,13 +48,10 @@ public class ServicesManageActivity extends BaseActivity {
 
         setupToolbar();
         initViews();
-        setupRecyclerView();
+        setupRecycler();
         loadServices();
     }
 
-    /**
-     * Setup toolbar
-     */
     private void setupToolbar() {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -63,48 +61,54 @@ public class ServicesManageActivity extends BaseActivity {
         }
     }
 
-    /**
-     * Initialize views
-     */
     private void initViews() {
         recyclerServices = findViewById(R.id.recyclerServices);
         progressBar = findViewById(R.id.progressBar);
         tvEmptyState = findViewById(R.id.tvEmptyState);
+
         fabAddService = findViewById(R.id.fabAddService);
         layoutServiceForm = findViewById(R.id.layoutServiceForm);
 
-        // Form fields
+        tvFormTitle = findViewById(R.id.tvFormTitle);
         etServiceType = findViewById(R.id.etServiceType);
         etServiceDescription = findViewById(R.id.etServiceDescription);
         etServiceDuration = findViewById(R.id.etServiceDuration);
         etServicePrice = findViewById(R.id.etServicePrice);
+
         btnSaveService = findViewById(R.id.btnSaveService);
         btnCancelService = findViewById(R.id.btnCancelService);
 
         serviceRepository = new ServiceRepository(this);
 
-        // Listeners
-        fabAddService.setOnClickListener(v -> showAddServiceForm());
+        fabAddService.setOnClickListener(v -> showAddForm());
+        btnCancelService.setOnClickListener(v -> hideForm());
         btnSaveService.setOnClickListener(v -> saveService());
-        btnCancelService.setOnClickListener(v -> hideServiceForm());
     }
 
-    /**
-     * Setup RecyclerView
-     */
-    private void setupRecyclerView() {
-        adapter = new ServicesAdapter(this);
+    private void setupRecycler() {
+        adapter = new ServicesAdapter(); // no-arg
         recyclerServices.setLayoutManager(new LinearLayoutManager(this));
         recyclerServices.setAdapter(adapter);
 
-        adapter.setOnServiceClickListener(service -> {
-            showEditServiceForm(service);
+        adapter.setOnServiceActionListener(new ServicesAdapter.OnServiceActionListener() {
+            @Override
+            public void onEdit(Service service) {
+                showEditForm(service);
+            }
+
+            @Override
+            public void onDelete(Service service) {
+                confirmDelete(service);
+            }
+
+            @Override
+            public void onClick(Service service) {
+                // optional: click = edit
+                showEditForm(service);
+            }
         });
     }
 
-    /**
-     * Load services
-     */
     private void loadServices() {
         progressBar.setVisibility(View.VISIBLE);
         recyclerServices.setVisibility(View.GONE);
@@ -115,7 +119,7 @@ public class ServicesManageActivity extends BaseActivity {
             public void onServicesLoaded(List<Service> services) {
                 progressBar.setVisibility(View.GONE);
 
-                if (services.isEmpty()) {
+                if (services == null || services.isEmpty()) {
                     tvEmptyState.setVisibility(View.VISIBLE);
                 } else {
                     recyclerServices.setVisibility(View.VISIBLE);
@@ -127,47 +131,43 @@ public class ServicesManageActivity extends BaseActivity {
             public void onError(String error) {
                 progressBar.setVisibility(View.GONE);
                 tvEmptyState.setVisibility(View.VISIBLE);
+                tvEmptyState.setText("Error: " + error);
                 showError(error);
             }
         });
     }
 
-    /**
-     * Show add service form
-     */
-    private void showAddServiceForm() {
+    private void showAddForm() {
         isEditMode = false;
         currentService = null;
         clearForm();
+        tvFormTitle.setText("Add Service");
         layoutServiceForm.setVisibility(View.VISIBLE);
         fabAddService.hide();
-        btnSaveService.setText(R.string.add);
+        btnSaveService.setText("Add");
     }
 
-    /**
-     * Show edit service form
-     */
-    private void showEditServiceForm(Service service) {
+    private void showEditForm(Service s) {
         isEditMode = true;
-        currentService = service;
-        fillForm(service);
+        currentService = s;
+
+        tvFormTitle.setText("Edit Service");
+        etServiceType.setText(s.getType());
+        etServiceDescription.setText(s.getDescription());
+        etServiceDuration.setText(String.valueOf(s.getDuration()));
+        etServicePrice.setText(String.valueOf(s.getPrice()));
+
         layoutServiceForm.setVisibility(View.VISIBLE);
         fabAddService.hide();
-        btnSaveService.setText(R.string.update);
+        btnSaveService.setText("Update");
     }
 
-    /**
-     * Hide service form
-     */
-    private void hideServiceForm() {
+    private void hideForm() {
         layoutServiceForm.setVisibility(View.GONE);
         fabAddService.show();
         clearForm();
     }
 
-    /**
-     * Clear form
-     */
     private void clearForm() {
         etServiceType.setText("");
         etServiceDescription.setText("");
@@ -175,34 +175,55 @@ public class ServicesManageActivity extends BaseActivity {
         etServicePrice.setText("");
     }
 
-    /**
-     * Fill form with service data
-     */
-    private void fillForm(Service service) {
-        etServiceType.setText(service.getType());
-        etServiceDescription.setText(service.getDescription());
-        etServiceDuration.setText(String.valueOf(service.getDuration()));
-        etServicePrice.setText(String.valueOf(service.getPrice()));
-    }
-
-    /**
-     * Save service
-     */
     private void saveService() {
-        if (!validateService()) {
+        String type = etServiceType.getText().toString().trim();
+        String desc = etServiceDescription.getText().toString().trim();
+        String durStr = etServiceDuration.getText().toString().trim();
+        String priceStr = etServicePrice.getText().toString().trim();
+
+        // ✅ هاي الثلاث لازم مش فاضيين (عشان PHP ما يرجع 422)
+        if (Helpers.isEmpty(type)) {
+            etServiceType.setError("Required");
+            etServiceType.requestFocus();
+            return;
+        }
+        if (Helpers.isEmpty(durStr)) {
+            etServiceDuration.setError("Required");
+            etServiceDuration.requestFocus();
+            return;
+        }
+        if (Helpers.isEmpty(priceStr)) {
+            etServicePrice.setError("Required");
+            etServicePrice.requestFocus();
             return;
         }
 
-        showLoading(isEditMode ? "Updating service..." : "Adding service...");
+        int duration;
+        double price;
 
-        String type = etServiceType.getText().toString().trim();
-        String description = etServiceDescription.getText().toString().trim();
-        int duration = Integer.parseInt(etServiceDuration.getText().toString().trim());
-        double price = Double.parseDouble(etServicePrice.getText().toString().trim());
+        try {
+            duration = Integer.parseInt(durStr);
+            if (duration <= 0) throw new NumberFormatException();
+        } catch (Exception e) {
+            etServiceDuration.setError("Invalid duration");
+            etServiceDuration.requestFocus();
+            return;
+        }
 
-        if (isEditMode) {
+        try {
+            price = Double.parseDouble(priceStr);
+            if (price < 0) throw new NumberFormatException();
+        } catch (Exception e) {
+            etServicePrice.setError("Invalid price");
+            etServicePrice.requestFocus();
+            return;
+        }
+
+        showLoading(isEditMode ? "Updating..." : "Adding...");
+
+        if (isEditMode && currentService != null) {
             currentService.setType(type);
-            currentService.setDescription(description);
+            currentService.setDescription(desc);
             currentService.setDuration(duration);
             currentService.setPrice(price);
 
@@ -210,32 +231,42 @@ public class ServicesManageActivity extends BaseActivity {
                     new ServiceRepository.OnServiceUpdatedListener() {
                         @Override
                         public void onServiceUpdated() {
+                            if (isFinishing() || isDestroyed()) return;
                             hideLoading();
-                            showToast("Service updated successfully");
-                            hideServiceForm();
+                            showToast("Updated");
+                            hideForm();
                             loadServices();
                         }
 
                         @Override
                         public void onError(String error) {
+                            if (isFinishing() || isDestroyed()) return;
                             hideLoading();
                             showError(error);
                         }
                     });
-        } else {
-            Service newService = new Service(null, type, description, duration, price);
 
-            serviceRepository.addService(newService, new ServiceRepository.OnServiceAddedListener() {
+        } else {
+            // ✅ مهم: اعمل set للحقول بدل ما تعتمد على constructor مش متأكد منه
+            Service s = new Service();
+            s.setType(type);
+            s.setDescription(desc);
+            s.setDuration(duration);
+            s.setPrice(price);
+
+            serviceRepository.addService(s, new ServiceRepository.OnServiceAddedListener() {
                 @Override
                 public void onServiceAdded(Service service) {
+                    if (isFinishing() || isDestroyed()) return;
                     hideLoading();
-                    showToast("Service added successfully");
-                    hideServiceForm();
+                    showToast("Added");
+                    hideForm();
                     loadServices();
                 }
 
                 @Override
                 public void onError(String error) {
+                    if (isFinishing() || isDestroyed()) return;
                     hideLoading();
                     showError(error);
                 }
@@ -243,26 +274,32 @@ public class ServicesManageActivity extends BaseActivity {
         }
     }
 
-    /**
-     * Validate service inputs
-     */
-    private boolean validateService() {
-        if (Helpers.isEmpty(etServiceType.getText().toString())) {
-            etServiceType.setError("Required");
-            return false;
-        }
+    private void confirmDelete(Service s) {
+        showConfirmation(
+                "Delete Service",
+                "Delete: " + s.getType() + " ?",
+                () -> doDelete(s)
+        );
+    }
 
-        if (Helpers.isEmpty(etServiceDuration.getText().toString())) {
-            etServiceDuration.setError("Required");
-            return false;
-        }
+    private void doDelete(Service s) {
+        showLoading("Deleting...");
+        serviceRepository.deleteService(s.getServiceId(), new ServiceRepository.OnServiceDeletedListener() {
+            @Override
+            public void onServiceDeleted() {
+                if (isFinishing() || isDestroyed()) return;
+                hideLoading();
+                showToast("Deleted");
+                loadServices();
+            }
 
-        if (Helpers.isEmpty(etServicePrice.getText().toString())) {
-            etServicePrice.setError("Required");
-            return false;
-        }
-
-        return true;
+            @Override
+            public void onError(String error) {
+                if (isFinishing() || isDestroyed()) return;
+                hideLoading();
+                showError(error);
+            }
+        });
     }
 
     @Override
