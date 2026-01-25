@@ -2,87 +2,52 @@ package com.example.carwash.models;
 
 public class Review {
 
-    private String reviewId;
-    private String bookingId;
-    private String userId;
-
-    // rating from 1 to 5
+    private int bookingId;
+    private String customerName;
+    private String serviceType;
     private int rating;
-
-    private String comment;
-
-    // stored as String from MySQL (e.g. "2026-01-16 16:30:00")
-    private String createdAt;
+    private String comment;   // <-- هذا اللي كان ناقص
+    private String reviewDate;
 
     public Review() {
-        // empty constructor required
     }
 
-    public Review(String bookingId, String userId, int rating, String comment) {
+    public Review(int bookingId, String customerName, String serviceType,
+                  int rating, String comment, String reviewDate) {
         this.bookingId = bookingId;
-        this.userId = userId;
+        this.customerName = customerName;
+        this.serviceType = serviceType;
         this.rating = rating;
         this.comment = comment;
+        this.reviewDate = reviewDate;
     }
 
-    // ================= GETTERS & SETTERS =================
-
-    public String getReviewId() {
-        return reviewId;
-    }
-
-    public void setReviewId(String reviewId) {
-        this.reviewId = reviewId;
-    }
-
-    public String getBookingId() {
+    public int getBookingId() {
         return bookingId;
     }
 
-    public void setBookingId(String bookingId) {
+    public void setBookingId(int bookingId) {
         this.bookingId = bookingId;
     }
 
-    public String getUserId() {
-        return userId;
+    public String getCustomerName() {
+        return customerName;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public String getServiceType() {
+        return serviceType;
     }
 
     public int getRating() {
         return rating;
     }
 
-    public void setRating(int rating) {
-        // simple validation
-        if (rating < 1) rating = 1;
-        if (rating > 5) rating = 5;
-        this.rating = rating;
-    }
-
+    /** ✅ هذا المهم */
     public String getComment() {
         return comment;
     }
 
-    public void setComment(String comment) {
-        this.comment = comment;
-    }
-
-    public String getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(String createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    @Override
-    public String toString() {
-        return "Review{" +
-                "rating=" + rating +
-                ", comment='" + comment + '\'' +
-                '}';
+    public String getReviewDate() {
+        return reviewDate;
     }
 }

@@ -132,10 +132,10 @@ public class ManagerActivity extends BaseActivity {
      * Open reviews
      */
     private void openReviews() {
-//         Intent intent = new Intent(this, ReviewsActivity.class);
-//         startActivity(intent);
+         Intent intent = new Intent(this, ReviewsManageActivity.class);
+         startActivity(intent);
 
-        showToast("Customer Reviews feature coming soon!");
+//        showToast("Customer Reviews feature coming soon!");
     }
 
     @Override

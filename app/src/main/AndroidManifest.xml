@@ -112,6 +112,12 @@
             android:label="@string/manage_employees"
             android:parentActivityName=".activities.manager.ManagerActivity" />
 
+        <activity
+            android:name=".activities.manager.ReviewsManageActivity"
+            android:exported="false"
+            android:label="customer_reviews"
+            android:parentActivityName=".activities.manager.ManagerActivity" />
+
 
     </application>
 

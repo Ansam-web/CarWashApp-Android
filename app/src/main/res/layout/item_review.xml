@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    app:cardCornerRadius="18dp"
+    app:cardUseCompatPadding="true"
+    app:cardElevation="3dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="14dp"
+        android:gravity="center_vertical">
+
+        <!-- Accent bar (نفس ستايل الداشبورد) -->
+        <View
+            android:layout_width="6dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_accent_bar_5"
+            android:layout_marginEnd="12dp" />
+
+        <!-- Content -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <!-- Customer Name -->
+            <TextView
+                android:id="@+id/tvCustomer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Customer Name"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:textColor="#1F2937" />
+
+            <!-- Service Type -->
+            <TextView
+                android:id="@+id/tvService"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Service Type"
+                android:layout_marginTop="2dp"
+                android:textSize="13sp"
+                android:textColor="#6B7280" />
+
+            <!-- Rating (نفس id القديم) -->
+            <TextView
+                android:id="@+id/tvRating"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="⭐ 5/5"
+                android:layout_marginTop="6dp"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:textColor="#0B4A6F" />
+
+            <!-- Review Text -->
+            <TextView
+                android:id="@+id/tvReview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Very good service!"
+                android:layout_marginTop="6dp"
+                android:textSize="14sp"
+                android:textColor="#374151" />
+
+            <!-- Date -->
+            <TextView
+                android:id="@+id/tvDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="2026-01-20"
+                android:layout_marginTop="6dp"
+                android:textSize="12sp"
+                android:textColor="#9CA3AF" />
+        </LinearLayout>
+
+        <!-- Star icon -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="⭐"
+            android:textSize="20sp"
+            android:layout_marginStart="6dp" />
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>
