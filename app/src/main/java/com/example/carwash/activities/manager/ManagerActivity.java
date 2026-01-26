@@ -104,10 +104,10 @@ public class ManagerActivity extends BaseActivity {
      * Open manage bookings
      */
     private void openManageBookings() {
-        // Intent intent = new Intent(this, ManagerBookingsActivity.class);
-        // startActivity(intent);
+         Intent intent = new Intent(this, ManagerBookingsActivity.class);
+         startActivity(intent);
 
-        showToast("Manage Bookings feature coming soon!");
+//        showToast("Manage Bookings feature coming soon!");
     }
 
     /**

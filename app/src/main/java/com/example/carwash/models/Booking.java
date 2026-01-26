@@ -19,7 +19,8 @@ public class Booking {
     private double locationLng;
     private double totalPrice;
 
-    private int rating;
+    // ✅ لازم تكون nullable لأنها بتجي من API أحياناً null
+    private Integer rating;
     private String review;
 
     // Dates as STRING (from MySQL)
@@ -30,6 +31,11 @@ public class Booking {
     private String serviceName;
     private String carModel;
     private String userName;
+
+    // ✅ Display fields from Manager JOIN (API)
+    private String customerName;  // customer_name
+    private String serviceType;   // service_type
+    private String teamName;      // team_name
 
     public Booking() {
         // Required empty constructor
@@ -87,8 +93,9 @@ public class Booking {
     public double getTotalPrice() { return totalPrice; }
     public void setTotalPrice(double totalPrice) { this.totalPrice = totalPrice; }
 
-    public int getRating() { return rating; }
-    public void setRating(int rating) { this.rating = rating; }
+    // ✅ nullable rating
+    public Integer getRating() { return rating; }
+    public void setRating(Integer rating) { this.rating = rating; }
 
     public String getReview() { return review; }
     public void setReview(String review) { this.review = review; }
@@ -109,6 +116,17 @@ public class Booking {
 
     public String getUserName() { return userName; }
     public void setUserName(String userName) { this.userName = userName; }
+
+    // ============== MANAGER API FIELDS ====================
+
+    public String getCustomerName() { return customerName; }
+    public void setCustomerName(String customerName) { this.customerName = customerName; }
+
+    public String getServiceType() { return serviceType; }
+    public void setServiceType(String serviceType) { this.serviceType = serviceType; }
+
+    public String getTeamName() { return teamName; }
+    public void setTeamName(String teamName) { this.teamName = teamName; }
 
     @Override
     public String toString() {

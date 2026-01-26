@@ -118,6 +118,11 @@
             android:label="customer_reviews"
             android:parentActivityName=".activities.manager.ManagerActivity" />
 
+        <activity
+            android:name=".activities.manager.ManagerBookingsActivity"
+            android:exported="false"
+            android:label="manage_bookings"
+            android:parentActivityName=".activities.manager.ManagerActivity" />
 
     </application>
 

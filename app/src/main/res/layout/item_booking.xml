@@ -1,25 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/cardBooking"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
-    style="@style/CardStyle">
+    app:cardCornerRadius="18dp"
+    app:cardUseCompatPadding="true"
+    app:cardElevation="3dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="16dp">
+        android:padding="14dp"
+        android:gravity="center_vertical">
 
-        <!-- Status Indicator -->
+        <!-- Accent / Status Indicator (مثل الداشبورد) -->
         <View
             android:id="@+id/statusIndicator"
-            android:layout_width="4dp"
+            android:layout_width="6dp"
             android:layout_height="match_parent"
             android:layout_marginEnd="12dp"
-            android:background="@color/primary" />
+            android:background="@drawable/bg_accent_bar_3" />
 
         <!-- Content -->
         <LinearLayout
@@ -34,54 +37,21 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Normal Wash"
-                android:textSize="16sp"
+                android:textSize="15sp"
                 android:textStyle="bold"
-                android:textColor="@color/text_primary" />
+                android:textColor="#1F2937" />
 
             <!-- Car Model -->
             <TextView
                 android:id="@+id/tvCarModel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="2dp"
                 android:text="Toyota Camry (2020)"
-                android:textSize="14sp"
-                android:textColor="@color/text_secondary" />
+                android:textSize="13sp"
+                android:textColor="#6B7280" />
 
             <!-- Date and Time -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/tvBookingDate"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="15/01/2026"
-                    android:textSize="12sp"
-                    android:textColor="@color/text_secondary"
-                    android:drawableStart="@android:drawable/ic_menu_my_calendar"
-                    android:drawablePadding="4dp"
-                    android:drawableTint="@color/text_secondary" />
-
-                <TextView
-                    android:id="@+id/tvBookingTime"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="14:00"
-                    android:textSize="12sp"
-                    android:textColor="@color/text_secondary"
-                    android:drawableStart="@android:drawable/ic_menu_recent_history"
-                    android:drawablePadding="4dp"
-                    android:drawableTint="@color/text_secondary" />
-
-            </LinearLayout>
-
-            <!-- Status and Price -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -90,28 +60,125 @@
                 android:gravity="center_vertical">
 
                 <TextView
-                    android:id="@+id/tvBookingStatus"
+                    android:id="@+id/tvBookingDate"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Pending"
-                    android:textSize="14sp"
+                    android:text="2026-01-15"
+                    android:textSize="12sp"
+                    android:textColor="#6B7280"
+                    android:drawableStart="@android:drawable/ic_menu_my_calendar"
+                    android:drawablePadding="4dp"
+                    android:drawableTint="#6B7280" />
+
+                <TextView
+                    android:id="@+id/tvBookingTime"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="14:00"
+                    android:textSize="12sp"
+                    android:textColor="#6B7280"
+                    android:drawableStart="@android:drawable/ic_menu_recent_history"
+                    android:drawablePadding="4dp"
+                    android:drawableTint="#6B7280" />
+            </LinearLayout>
+
+            <!-- Address (مفيد للمانجر) -->
+            <TextView
+                android:id="@+id/tvAddress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Ramallah - Al Manara Street"
+                android:textSize="13sp"
+                android:textColor="#374151"
+                android:layout_marginTop="6dp" />
+
+            <!-- Status + Price -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <!-- status pill (بنفس روح الداشبورد) -->
+                <TextView
+                    android:id="@+id/tvBookingStatus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="pending"
                     android:textStyle="bold"
-                    android:textColor="@color/status_pending" />
+                    android:textSize="12sp"
+                    android:textColor="@android:color/white"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:paddingTop="6dp"
+                    android:paddingBottom="6dp"
+                    android:background="@drawable/bg_status_pill" />
 
                 <TextView
                     android:id="@+id/tvBookingPrice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="$25.00"
-                    android:textSize="16sp"
+                    android:textSize="14sp"
                     android:textStyle="bold"
-                    android:textColor="@color/primary" />
+                    android:textColor="#0B4A6F"
+                    android:layout_marginStart="10dp" />
 
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+
+                <!-- small icon -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="📌"
+                    android:textSize="18sp" />
+            </LinearLayout>
+
+            <!-- Team label -->
+            <TextView
+                android:id="@+id/tvTeam"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Team: -"
+                android:textSize="13sp"
+                android:textColor="#6B7280"
+                android:layout_marginTop="10dp" />
+
+            <!-- Assign team (للمانجر) -->
+            <LinearLayout
+                android:id="@+id/layoutAssign"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="10dp"
+                android:gravity="center_vertical">
+
+                <Spinner
+                    android:id="@+id/spTeams"
+                    android:layout_width="0dp"
+                    android:layout_height="42dp"
+                    android:layout_weight="1"
+                    android:background="@android:drawable/editbox_background"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnAssign"
+                    android:layout_width="wrap_content"
+                    android:layout_height="42dp"
+                    android:text="Assign"
+                    android:layout_marginStart="10dp"
+                    app:cornerRadius="14dp" />
             </LinearLayout>
 
         </LinearLayout>
 
     </LinearLayout>
 
-</androidx.cardview.widget.CardView>
+</com.google.android.material.card.MaterialCardView>
